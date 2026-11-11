@@ -38,7 +38,7 @@ import {
   linkWhatsApp,
   meQuery,
   mensagemErro,
-  SERVICOS_CTO,
+  servicosCtoQuery,
   textoCtoWhatsApp,
   textoRegistroWhatsApp,
   type Cto,
@@ -266,7 +266,9 @@ const campo =
 
 function RegistrarServico({ cto, tecnico }: { cto: Cto; tecnico: string }) {
   const qc = useQueryClient();
-  const [servico, setServico] = useState<string>(SERVICOS_CTO[0]);
+  const servicos = useQuery(servicosCtoQuery);
+  const [escolhido, setServico] = useState("");
+  const servico = escolhido || servicos.data?.[0] || "";
   const [descricao, setDescricao] = useState("");
   const [portas, setPortas] = useState("");
   const [ocupadas, setOcupadas] = useState("");
@@ -349,7 +351,7 @@ function RegistrarServico({ cto, tecnico }: { cto: Cto; tecnico: string }) {
           value={servico}
           onChange={(e) => setServico(e.target.value)}
         >
-          {SERVICOS_CTO.map((s) => (
+          {servicos.data?.map((s) => (
             <option key={s}>{s}</option>
           ))}
         </select>

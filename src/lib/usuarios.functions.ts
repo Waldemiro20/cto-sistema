@@ -50,12 +50,11 @@ export const alterarPerfil = createServerFn({ method: "POST" })
       throw new Error("Você não pode remover o seu próprio acesso de TI.");
     }
     const admin = await exigirTi(context.supabase, context.userId);
-    const { error: e1 } = await admin.from("user_roles").delete().eq("user_id", data.userId);
-    if (e1) throw new Error(e1.message);
-    const { error: e2 } = await admin
-      .from("user_roles")
-      .insert({ user_id: data.userId, role: data.perfil });
-    if (e2) throw new Error(e2.message);
+    const { error } = await admin
+      .from("usuarios")
+      .update({ perfil: data.perfil })
+      .eq("id", data.userId);
+    if (error) throw new Error(error.message);
     return { ok: true };
   });
 

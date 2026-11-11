@@ -8,11 +8,6 @@ export type Historico = Tables<"historico">;
 export type Perfil = "ti" | "tecnico";
 export type Me = { id: string; email: string; nome: string; perfil: Perfil };
 
-export const TIPOS_SERVICO = [
-  "Nova Instalação",
-  "Troca de Porta",
-  "Manutenção Preventiva",
-] as const;
 export const STATUS_LABEL: Record<string, string> = {
   pendente: "Pendentes",
   andamento: "Em desenvolvimento",
@@ -24,12 +19,17 @@ export const meQuery = queryOptions({
   queryFn: async (): Promise<Me> => {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) throw new Error("Sem sessão");
-    const [{ data: p }, { data: r }] = await Promise.all([
-      supabase.from("profiles").select("nome").eq("id", u.user.id).maybeSingle(),
-      supabase.from("user_roles").select("role").eq("user_id", u.user.id),
-    ]);
-    const perfil: Perfil = r?.some((x) => x.role === "ti") ? "ti" : "tecnico";
-    return { id: u.user.id, email: u.user.email ?? "", nome: p?.nome ?? "Usuário", perfil };
+    const { data: p } = await supabase
+      .from("usuarios")
+      .select("nome,perfil")
+      .eq("id", u.user.id)
+      .maybeSingle();
+    return {
+      id: u.user.id,
+      email: u.user.email ?? "",
+      nome: p?.nome ?? "Usuário",
+      perfil: p?.perfil ?? "tecnico",
+    };
   },
 });
 
@@ -86,13 +86,40 @@ export type Usuario = { id: string; nome: string; email: string | null; perfil: 
 export const usuariosQuery = queryOptions({
   queryKey: ["usuarios"],
   queryFn: async (): Promise<Usuario[]> => {
-    const [{ data: p, error }, { data: r }] = await Promise.all([
-      supabase.from("profiles").select("id,nome,email").order("nome"),
-      supabase.from("user_roles").select("user_id,role"),
-    ]);
+    const { data, error } = await supabase
+      .from("usuarios")
+      .select("id,nome,email,perfil")
+      .order("nome");
     if (error) throw error;
-    const ti = new Set((r ?? []).filter((x) => x.role === "ti").map((x) => x.user_id));
-    return (p ?? []).map((u) => ({ ...u, perfil: ti.has(u.id) ? "ti" : "tecnico" }));
+    return data;
+  },
+});
+
+/** Opções de serviço da CTO, cadastradas na tabela servicos_cto. */
+export const servicosCtoQuery = queryOptions({
+  queryKey: ["servicos_cto"],
+  queryFn: async (): Promise<string[]> => {
+    const { data, error } = await supabase
+      .from("servicos_cto")
+      .select("nome")
+      .eq("ativo", true)
+      .order("ordem");
+    if (error) throw error;
+    return data.map((s) => s.nome);
+  },
+});
+
+/** Tipos de tarefa, cadastrados na tabela tipos_servico. */
+export const tiposServicoQuery = queryOptions({
+  queryKey: ["tipos_servico"],
+  queryFn: async (): Promise<string[]> => {
+    const { data, error } = await supabase
+      .from("tipos_servico")
+      .select("nome")
+      .eq("ativo", true)
+      .order("ordem");
+    if (error) throw error;
+    return data.map((s) => s.nome);
   },
 });
 
@@ -167,15 +194,6 @@ export function iniciais(nome: string) {
 }
 
 /* ---------- CTOs ---------- */
-export const SERVICOS_CTO = [
-  "Instalação de cliente",
-  "Manutenção",
-  "Troca de porta",
-  "Retirada de cliente",
-  "Vistoria",
-  "Outro",
-] as const;
-
 /** Após esse prazo sem conferência, a contagem de portas é sinalizada como possivelmente desatualizada. */
 export const DIAS_PORTAS_VALIDAS = 90;
 

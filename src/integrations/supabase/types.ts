@@ -137,24 +137,24 @@ export type Database = {
           },
         ]
       }
-      profiles: {
+      servicos_cto: {
         Row: {
-          created_at: string
-          email: string | null
+          ativo: boolean
           id: string
           nome: string
+          ordem: number
         }
         Insert: {
-          created_at?: string
-          email?: string | null
-          id: string
-          nome?: string
+          ativo?: boolean
+          id?: string
+          nome: string
+          ordem?: number
         }
         Update: {
-          created_at?: string
-          email?: string | null
+          ativo?: boolean
           id?: string
           nome?: string
+          ordem?: number
         }
         Relationships: []
       }
@@ -211,21 +211,48 @@ export type Database = {
           },
         ]
       }
-      user_roles: {
+      tipos_servico: {
         Row: {
+          ativo: boolean
           id: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
+          nome: string
+          ordem: number
         }
         Insert: {
+          ativo?: boolean
           id?: string
-          role: Database["public"]["Enums"]["app_role"]
-          user_id: string
+          nome: string
+          ordem?: number
         }
         Update: {
+          ativo?: boolean
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
-          user_id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: []
+      }
+      usuarios: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          nome: string
+          perfil: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id: string
+          nome?: string
+          perfil?: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          nome?: string
+          perfil?: Database["public"]["Enums"]["app_role"]
         }
         Relationships: []
       }
