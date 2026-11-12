@@ -24,22 +24,30 @@ function HistoricoPage() {
   const ctos = useQuery(ctosQuery);
   const [termo, setTermo] = useState("");
   const [filtro, setFiltro] = useState<(typeof FILTROS)[number]["id"]>("todos");
+  const [tecnico, setTecnico] = useState("");
+  const tecnicos = useMemo(
+    () =>
+      [...new Set((hist.data ?? []).filter((h) => h.usuario_id).map((h) => h.tecnico))].sort(
+        (a, b) => a.localeCompare(b, "pt-BR"),
+      ),
+    [hist.data],
+  );
   const ctoById = useMemo(() => new Map((ctos.data ?? []).map((c) => [c.id, c])), [ctos.data]);
 
   const lista = useMemo(() => {
     const q = normalizar(termo);
     return (hist.data ?? []).filter((h) => {
+      if (tecnico && h.tecnico !== tecnico) return false;
       if (filtro === "servico" && h.categoria !== "servico") return false;
       if (filtro === "problema" && h.categoria !== "problema") return false;
       if (filtro === "tarefas" && !["tarefa", "status"].includes(h.categoria)) return false;
-      if (filtro === "ti" && !["cadastro", "alteracao"].includes(h.categoria))
-        return false;
+      if (filtro === "ti" && !["cadastro", "alteracao"].includes(h.categoria)) return false;
       if (!q) return true;
       return normalizar(
         [h.cto_codigo, h.tecnico, h.acao, h.descricao, h.servico_id].filter(Boolean).join(" "),
       ).includes(q);
     });
-  }, [hist.data, termo, filtro]);
+  }, [hist.data, termo, filtro, tecnico]);
 
   return (
     <div className="mx-auto w-full max-w-4xl p-4 md:p-8">
@@ -61,6 +69,19 @@ function HistoricoPage() {
           className="h-12 w-full rounded-xl border border-input bg-card pl-11 pr-4 text-base outline-none placeholder:text-muted-foreground focus-visible:border-primary"
         />
       </div>
+      <select
+        value={tecnico}
+        onChange={(e) => setTecnico(e.target.value)}
+        aria-label="Filtrar por técnico"
+        className="mt-3 h-11 w-full rounded-xl border border-input bg-card px-3 text-base outline-none focus-visible:border-primary sm:w-72"
+      >
+        <option value="">Todos os técnicos</option>
+        {tecnicos.map((t) => (
+          <option key={t} value={t}>
+            {t}
+          </option>
+        ))}
+      </select>
       <div
         className="mt-3 flex gap-2 overflow-x-auto pb-1"
         role="group"

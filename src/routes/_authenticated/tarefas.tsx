@@ -85,7 +85,10 @@ function TarefasPage() {
   const [filtroTipo, setFiltroTipo] = useState("todos");
   const [filtroCto, setFiltroCto] = useState("todas");
   const [busca, setBusca] = useState("");
-  const ctoById = useMemo(() => new Map((ctos.data ?? []).map((c) => [c.id, c])), [ctos.data]);
+  const ctoById = useMemo(
+    () => new Map<string | null, Cto>((ctos.data ?? []).map((c) => [c.id, c])),
+    [ctos.data],
+  );
   const lista = useMemo(() => tarefas.data ?? [], [tarefas.data]);
   const listaFiltrada = useMemo(() => {
     const termo = busca.trim().toLocaleLowerCase("pt-BR");

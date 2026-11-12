@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState, type FormEvent } from "react";
 import {
@@ -11,6 +11,7 @@ import {
   Pencil,
   RotateCcw,
   Share2,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -58,6 +59,10 @@ function CtoPage() {
   const qc = useQueryClient();
   const [editando, setEditando] = useState(false);
   const [confirmarStatus, setConfirmarStatus] = useState(false);
+  const [confirmarExclusao, setConfirmarExclusao] = useState(false);
+  const [codigoConfirmacao, setCodigoConfirmacao] = useState("");
+  const [excluindo, setExcluindo] = useState(false);
+  const navigate = useNavigate();
   const cto = ctos.data?.find((c) => c.id === id);
   const ti = me.data?.perfil === "ti";
   const foco = useMemo(() => (cto ? { lat: cto.lat, lng: cto.lng, zoom: 17 } : null), [cto]);
@@ -74,9 +79,13 @@ function CtoPage() {
       <div className="mx-auto max-w-md p-6 text-center">
         <p className="font-bold">CTO não encontrada.</p>
         <Button asChild className="mt-4">
-          <Link to="/mapa" search={{ criticas: false }}>
-            Voltar ao mapa
-          </Link>
+          {ti ? (
+            <Link to="/mapa" search={{ criticas: false }}>
+              Voltar ao mapa
+            </Link>
+          ) : (
+            <Link to="/consultar">Voltar à busca</Link>
+          )}
         </Button>
       </div>
     );
@@ -110,15 +119,38 @@ function CtoPage() {
     qc.invalidateQueries({ queryKey: ["historico"] });
   }
 
+  async function excluir() {
+    if (!cto) return;
+    setExcluindo(true);
+    const { error } = await supabase.rpc("excluir_cto", { _cto: cto.id });
+    setExcluindo(false);
+    if (error) {
+      toast.error(mensagemErro(error));
+      return;
+    }
+    setConfirmarExclusao(false);
+    toast.success(`${cto.codigo} excluída. Os registros de histórico foram mantidos.`);
+    qc.setQueryData(ctosQuery.queryKey, (old) => old?.filter((c) => c.id !== cto.id));
+    qc.invalidateQueries({ queryKey: ["ctos"] });
+    qc.invalidateQueries({ queryKey: ["historico"] });
+    qc.invalidateQueries({ queryKey: ["tarefas"] });
+    void navigate({ to: "/gestao", search: { nova: false }, replace: true });
+  }
+
+  const voltar =
+    "inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground";
+
   return (
     <div className="mx-auto w-full max-w-5xl p-4 md:p-8">
-      <Link
-        to="/mapa"
-        search={{ criticas: false }}
-        className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" /> Mapa
-      </Link>
+      {ti ? (
+        <Link to="/mapa" search={{ criticas: false }} className={voltar}>
+          <ArrowLeft className="size-4" /> Mapa
+        </Link>
+      ) : (
+        <Link to="/consultar" className={voltar}>
+          <ArrowLeft className="size-4" /> Buscar outra CTO
+        </Link>
+      )}
 
       <header className="mt-2 flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
@@ -149,6 +181,16 @@ function CtoPage() {
               onClick={() => setConfirmarStatus(true)}
             >
               {cto.ativa ? <Ban /> : <RotateCcw />} {cto.ativa ? "Desativar" : "Reativar"}
+            </Button>
+            <Button
+              variant="outline"
+              className="border-danger/50 text-danger hover:bg-danger/10 hover:text-danger"
+              onClick={() => {
+                setCodigoConfirmacao("");
+                setConfirmarExclusao(true);
+              }}
+            >
+              <Trash2 /> Excluir
             </Button>
           </div>
         )}
@@ -209,7 +251,7 @@ function CtoPage() {
             )}
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className={`flex flex-col gap-4 ${ti ? "" : "order-first lg:order-none"}`}>
           {cto.ativa && <RegistrarServico cto={cto} tecnico={me.data?.nome ?? ""} />}
 
           <section aria-labelledby="hist-titulo">
@@ -257,6 +299,44 @@ function CtoPage() {
             <AlertDialogAction onClick={alternarStatus}>
               {cto.ativa ? "Desativar" : "Reativar"}
             </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={confirmarExclusao}
+        onOpenChange={(o) => !excluindo && setConfirmarExclusao(o)}
+      >
+        <AlertDialogContent className="app-theme-portal">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Excluir {cto.codigo} definitivamente?</AlertDialogTitle>
+            <AlertDialogDescription>
+              A CTO sai do sistema e não pode ser recuperada. Os registros de serviço continuam no
+              Histórico com o código {cto.codigo}. Se a CTO só saiu de uso, prefira{" "}
+              <strong>Desativar</strong>.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div>
+            <label htmlFor="confirmar-codigo" className="mb-1.5 block text-sm font-semibold">
+              Digite <strong>{cto.codigo}</strong> para confirmar
+            </label>
+            <input
+              id="confirmar-codigo"
+              className={campo}
+              value={codigoConfirmacao}
+              onChange={(e) => setCodigoConfirmacao(e.target.value)}
+              autoComplete="off"
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={excluindo}>Cancelar</AlertDialogCancel>
+            <Button
+              variant="destructive"
+              disabled={excluindo || codigoConfirmacao.trim() !== cto.codigo.trim()}
+              onClick={excluir}
+            >
+              {excluindo ? <Loader2 className="animate-spin" /> : <Trash2 />} Excluir CTO
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

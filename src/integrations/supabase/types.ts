@@ -156,7 +156,7 @@ export type Database = {
         Row: {
           cliente: string;
           created_at: string;
-          cto_id: string;
+          cto_id: string | null;
           data: string;
           descricao_problema: string | null;
           endereco: string;
@@ -173,7 +173,7 @@ export type Database = {
         Insert: {
           cliente: string;
           created_at?: string;
-          cto_id: string;
+          cto_id?: string | null;
           data?: string;
           descricao_problema?: string | null;
           endereco?: string;
@@ -190,7 +190,7 @@ export type Database = {
         Update: {
           cliente?: string;
           created_at?: string;
-          cto_id?: string;
+          cto_id?: string | null;
           data?: string;
           descricao_problema?: string | null;
           endereco?: string;
@@ -283,6 +283,7 @@ export type Database = {
         Returns: string;
       };
       alternar_cto: { Args: { _cto: string }; Returns: boolean };
+      excluir_cto: { Args: { _cto: string }; Returns: undefined };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];

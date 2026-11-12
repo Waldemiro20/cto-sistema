@@ -96,6 +96,23 @@ export const historicoCtoQuery = (ctoId: string) =>
     },
   });
 
+/** Serviços e problemas registrados pelo próprio usuário (área do técnico). */
+export const meusRegistrosQuery = (userId: string) =>
+  queryOptions({
+    queryKey: ["historico", "usuario", userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("historico")
+        .select("*")
+        .eq("usuario_id", userId)
+        .in("categoria", ["servico", "problema"])
+        .order("created_at", { ascending: false })
+        .limit(200);
+      if (error) throw error;
+      return data;
+    },
+  });
+
 export type Usuario = { id: string; nome: string; email: string | null; perfil: Perfil };
 export const usuariosQuery = queryOptions({
   queryKey: ["usuarios"],

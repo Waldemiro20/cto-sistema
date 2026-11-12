@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import {
@@ -48,7 +48,14 @@ const COLUNAS = [
 ] as const;
 type StatusFiltro = "todas" | (typeof COLUNAS)[number]["id"];
 
+/** O técnico não usa o painel da TI: vai direto para a consulta de CTOs. */
 function Dashboard() {
+  const me = useQuery(meQuery);
+  if (me.data?.perfil === "tecnico") return <Navigate to="/consultar" replace />;
+  return <DashboardTI />;
+}
+
+function DashboardTI() {
   const me = useQuery(meQuery);
   const tarefas = useQuery(tarefasQuery);
   const ctos = useQuery(ctosQuery);

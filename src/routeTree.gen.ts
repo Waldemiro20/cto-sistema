@@ -12,10 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedConsultarRouteImport } from './routes/_authenticated/consultar'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedGestaoRouteImport } from './routes/_authenticated/gestao'
 import { Route as AuthenticatedHistoricoRouteImport } from './routes/_authenticated/historico'
 import { Route as AuthenticatedMapaRouteImport } from './routes/_authenticated/mapa'
+import { Route as AuthenticatedMeusRegistrosRouteImport } from './routes/_authenticated/meus-registros'
 import { Route as AuthenticatedTarefasRouteImport } from './routes/_authenticated/tarefas'
 import { Route as AuthenticatedCtosIdRouteImport } from './routes/_authenticated/ctos.$id'
 
@@ -32,6 +34,11 @@ const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedConsultarRoute = AuthenticatedConsultarRouteImport.update({
+  id: '/consultar',
+  path: '/consultar',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -53,6 +60,12 @@ const AuthenticatedMapaRoute = AuthenticatedMapaRouteImport.update({
   path: '/mapa',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedMeusRegistrosRoute =
+  AuthenticatedMeusRegistrosRouteImport.update({
+    id: '/meus-registros',
+    path: '/meus-registros',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedTarefasRoute = AuthenticatedTarefasRouteImport.update({
   id: '/tarefas',
   path: '/tarefas',
@@ -67,20 +80,24 @@ const AuthenticatedCtosIdRoute = AuthenticatedCtosIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/consultar': typeof AuthenticatedConsultarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gestao': typeof AuthenticatedGestaoRoute
   '/historico': typeof AuthenticatedHistoricoRoute
   '/mapa': typeof AuthenticatedMapaRoute
+  '/meus-registros': typeof AuthenticatedMeusRegistrosRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/ctos/$id': typeof AuthenticatedCtosIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/consultar': typeof AuthenticatedConsultarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/gestao': typeof AuthenticatedGestaoRoute
   '/historico': typeof AuthenticatedHistoricoRoute
   '/mapa': typeof AuthenticatedMapaRoute
+  '/meus-registros': typeof AuthenticatedMeusRegistrosRoute
   '/tarefas': typeof AuthenticatedTarefasRoute
   '/ctos/$id': typeof AuthenticatedCtosIdRoute
 }
@@ -89,10 +106,12 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/_authenticated/consultar': typeof AuthenticatedConsultarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/gestao': typeof AuthenticatedGestaoRoute
   '/_authenticated/historico': typeof AuthenticatedHistoricoRoute
   '/_authenticated/mapa': typeof AuthenticatedMapaRoute
+  '/_authenticated/meus-registros': typeof AuthenticatedMeusRegistrosRoute
   '/_authenticated/tarefas': typeof AuthenticatedTarefasRoute
   '/_authenticated/ctos/$id': typeof AuthenticatedCtosIdRoute
 }
@@ -101,20 +120,24 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/consultar'
     | '/dashboard'
     | '/gestao'
     | '/historico'
     | '/mapa'
+    | '/meus-registros'
     | '/tarefas'
     | '/ctos/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/consultar'
     | '/dashboard'
     | '/gestao'
     | '/historico'
     | '/mapa'
+    | '/meus-registros'
     | '/tarefas'
     | '/ctos/$id'
   id:
@@ -122,10 +145,12 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/_authenticated/consultar'
     | '/_authenticated/dashboard'
     | '/_authenticated/gestao'
     | '/_authenticated/historico'
     | '/_authenticated/mapa'
+    | '/_authenticated/meus-registros'
     | '/_authenticated/tarefas'
     | '/_authenticated/ctos/$id'
   fileRoutesById: FileRoutesById
@@ -159,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/consultar': {
+      id: '/_authenticated/consultar'
+      path: '/consultar'
+      fullPath: '/consultar'
+      preLoaderRoute: typeof AuthenticatedConsultarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -187,6 +219,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMapaRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/meus-registros': {
+      id: '/_authenticated/meus-registros'
+      path: '/meus-registros'
+      fullPath: '/meus-registros'
+      preLoaderRoute: typeof AuthenticatedMeusRegistrosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/tarefas': {
       id: '/_authenticated/tarefas'
       path: '/tarefas'
@@ -205,19 +244,23 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedConsultarRoute: typeof AuthenticatedConsultarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedGestaoRoute: typeof AuthenticatedGestaoRoute
   AuthenticatedHistoricoRoute: typeof AuthenticatedHistoricoRoute
   AuthenticatedMapaRoute: typeof AuthenticatedMapaRoute
+  AuthenticatedMeusRegistrosRoute: typeof AuthenticatedMeusRegistrosRoute
   AuthenticatedTarefasRoute: typeof AuthenticatedTarefasRoute
   AuthenticatedCtosIdRoute: typeof AuthenticatedCtosIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedConsultarRoute: AuthenticatedConsultarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedGestaoRoute: AuthenticatedGestaoRoute,
   AuthenticatedHistoricoRoute: AuthenticatedHistoricoRoute,
   AuthenticatedMapaRoute: AuthenticatedMapaRoute,
+  AuthenticatedMeusRegistrosRoute: AuthenticatedMeusRegistrosRoute,
   AuthenticatedTarefasRoute: AuthenticatedTarefasRoute,
   AuthenticatedCtosIdRoute: AuthenticatedCtosIdRoute,
 }

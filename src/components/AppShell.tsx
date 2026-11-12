@@ -11,6 +11,7 @@ import {
   MapPinned,
   Moon,
   PlusSquare,
+  Search,
   Sun,
   type LucideIcon,
 } from "lucide-react";
@@ -26,18 +27,30 @@ import {
 } from "@/components/ui/sheet";
 
 type Item = {
-  to: "/dashboard" | "/tarefas" | "/mapa" | "/historico" | "/gestao";
+  to:
+    | "/dashboard"
+    | "/tarefas"
+    | "/mapa"
+    | "/historico"
+    | "/gestao"
+    | "/consultar"
+    | "/meus-registros";
   label: string;
   icon: LucideIcon;
-  ti?: boolean;
 };
 
-const ITENS: Item[] = [
+/** Menu da TI (administração) e do técnico (consultar CTO e registrar serviço). */
+const ITENS_TI: Item[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/tarefas", label: "Tarefas", icon: ClipboardList },
   { to: "/mapa", label: "Mapa de CTOs", icon: MapPinned },
   { to: "/historico", label: "Histórico", icon: History },
-  { to: "/gestao", label: "Cadastrar CTO", icon: PlusSquare, ti: true },
+  { to: "/gestao", label: "Cadastrar CTO", icon: PlusSquare },
+];
+const ITENS_TECNICO: Item[] = [
+  { to: "/consultar", label: "Consultar CTO", icon: Search },
+  { to: "/mapa", label: "Mapa de CTOs", icon: MapPinned },
+  { to: "/meus-registros", label: "Meus registros", icon: History },
 ];
 
 type Theme = "light" | "dark";
@@ -49,7 +62,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   const qc = useQueryClient();
   const [theme, setTheme] = useState<Theme>("light");
   const [themeReady, setThemeReady] = useState(false);
-  const itens = ITENS.filter((i) => !i.ti || me.data?.perfil === "ti");
+  const itens = !me.data ? [] : me.data.perfil === "ti" ? ITENS_TI : ITENS_TECNICO;
 
   useEffect(() => {
     const savedTheme = window.localStorage.getItem(THEME_STORAGE_KEY);
@@ -263,6 +276,18 @@ function ItemLink({ item, mobile = false }: { item: Item; mobile?: boolean }) {
     case "/dashboard":
       return wrap(
         <Link to="/dashboard" className={className} activeProps={activeProps}>
+          {content}
+        </Link>,
+      );
+    case "/consultar":
+      return wrap(
+        <Link to="/consultar" className={className} activeProps={activeProps}>
+          {content}
+        </Link>,
+      );
+    case "/meus-registros":
+      return wrap(
+        <Link to="/meus-registros" className={className} activeProps={activeProps}>
           {content}
         </Link>,
       );
