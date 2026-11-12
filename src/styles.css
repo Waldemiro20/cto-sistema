@@ -197,6 +197,12 @@ body[data-app-theme="dark"] .app-theme-portal .app-logo {
   html {
     color-scheme: dark;
   }
+  /* Popups (dialogs, selects, menu) são renderizados fora do AppShell e herdariam
+     a cor de texto do body (branca); seguem sempre o tema escolhido. */
+  .app-theme,
+  .app-theme-portal {
+    color: var(--foreground);
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);

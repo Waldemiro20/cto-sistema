@@ -283,7 +283,7 @@ function CtoPage() {
       </Dialog>
 
       <AlertDialog open={confirmarStatus} onOpenChange={setConfirmarStatus}>
-        <AlertDialogContent>
+        <AlertDialogContent className="app-theme-portal">
           <AlertDialogHeader>
             <AlertDialogTitle>
               {cto.ativa ? `Desativar ${cto.codigo}?` : `Reativar ${cto.codigo}?`}
