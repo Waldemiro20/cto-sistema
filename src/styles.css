@@ -262,32 +262,40 @@ body[data-app-theme="dark"] .app-theme-portal .app-logo {
   filter: brightness(0.75) saturate(0.8) contrast(1.05);
 }
 
+/* Marcadores de CTO: cores próprias, com texto escuro e alto contraste em qualquer tema */
 .cto-pin {
+  --pin-ok: oklch(0.74 0.15 158);
+  --pin-full: oklch(0.74 0.17 50);
+  --pin-off: oklch(0.82 0.01 260);
+  --pin-unknown: oklch(0.97 0.005 260);
+  --pin-text: oklch(0.16 0.02 260);
+  --pin-border: oklch(0.16 0.02 260);
   display: grid;
   place-items: center;
   width: 34px;
   height: 34px;
   border-radius: 999px 999px 999px 4px;
   transform: rotate(-45deg);
-  border: 2px solid var(--foreground);
-  font: 800 12px var(--font-sans);
+  border: 2px solid var(--pin-border);
+  color: var(--pin-text);
+  font: 800 13px var(--font-sans);
   box-shadow: 0 6px 14px -4px oklch(0 0 0 / 70%);
 }
 .cto-pin span {
   transform: rotate(45deg);
 }
 .cto-pin--ok {
-  background: var(--success);
-  color: var(--success-foreground);
+  background: var(--pin-ok);
 }
 .cto-pin--full {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--pin-full);
 }
 .cto-pin--off {
-  background: oklch(0.55 0.01 160);
-  color: var(--foreground);
+  background: var(--pin-off);
   border-style: dashed;
+}
+.cto-pin--unknown {
+  background: var(--pin-unknown);
 }
 .cto-pin--selected {
   outline: 3px solid var(--foreground);
@@ -300,10 +308,6 @@ body[data-app-theme="dark"] .app-theme-portal .app-logo {
   background: var(--info);
   border: 3px solid var(--foreground);
   box-shadow: 0 0 0 8px color-mix(in oklab, var(--info) 30%, transparent);
-}
-.cto-pin--unknown {
-  background: var(--secondary);
-  color: var(--foreground);
 }
 .ref-pin {
   width: 22px;
