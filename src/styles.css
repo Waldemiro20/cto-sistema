@@ -196,6 +196,15 @@ body[data-app-theme="dark"] .app-theme-portal .app-logo {
   }
   html {
     color-scheme: dark;
+    /* Evita ajuste automático de fonte ao girar o celular. */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  /* Rede de segurança: nada empurra a página para os lados no celular.
+     "clip" (diferente de "hidden") não quebra o cabeçalho fixo (sticky). */
+  html,
+  body {
+    overflow-x: clip;
   }
   /* Popups (dialogs, selects, menu) são renderizados fora do AppShell e herdariam
      a cor de texto do body (branca); seguem sempre o tema escolhido. */

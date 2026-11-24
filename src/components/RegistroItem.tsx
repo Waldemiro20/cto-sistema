@@ -47,12 +47,12 @@ export function RegistroItem({
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-baseline justify-between gap-x-3">
-          <p className="font-bold">{r.acao}</p>
+          <p className="min-w-0 break-words font-bold">{r.acao}</p>
           <time className="text-xs text-muted-foreground" dateTime={r.created_at}>
             {dataHora(r.created_at)}
           </time>
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="break-words text-xs text-muted-foreground">
           {mostrarCto &&
             (r.cto_id ? (
               <Link
@@ -69,7 +69,7 @@ export function RegistroItem({
           {r.tecnico}
           {r.servico_id && ` · ${r.servico_id}`}
         </p>
-        {r.descricao && <p className="mt-1.5 whitespace-pre-line text-sm">{r.descricao}</p>}
+        {r.descricao && <p className="mt-1.5 whitespace-pre-line break-words text-sm">{r.descricao}</p>}
         {(r.portas_utilizadas || r.portas_ocupadas_obs != null) && (
           <p className="mt-1.5 text-xs text-muted-foreground">
             {r.portas_utilizadas && <>Portas: {r.portas_utilizadas}</>}

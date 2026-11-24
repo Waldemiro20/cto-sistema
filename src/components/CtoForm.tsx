@@ -235,7 +235,7 @@ export function CtoForm({
         </label>
         {f.portasConhecidas ? (
           <>
-            <div className="mt-2 grid grid-cols-2 gap-3">
+            <div className="mt-2 grid grid-cols-2 items-end gap-3">
               <Campo id="ptotal" label="Total de portas">
                 <input
                   id="ptotal"

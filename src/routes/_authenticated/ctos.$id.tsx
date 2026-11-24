@@ -155,8 +155,8 @@ function CtoPage() {
 
       <header className="mt-2 flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-2xl font-extrabold md:text-3xl">{cto.codigo}</h1>
-          <p className="text-muted-foreground">
+          <h1 className="break-words text-2xl font-extrabold md:text-3xl">{cto.codigo}</h1>
+          <p className="break-words text-muted-foreground">
             {[cto.nome, cto.bairro].filter(Boolean).join(" · ")}
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
@@ -211,7 +211,7 @@ function CtoPage() {
             </div>
             <div className="p-4">
               {cto.endereco && (
-                <p className="flex items-start gap-2 text-sm">
+                <p className="flex items-start gap-2 break-words text-sm">
                   <MapPin className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />{" "}
                   {cto.endereco}
                 </p>
@@ -233,7 +233,7 @@ function CtoPage() {
                 </Button>
               </div>
               {cto.observacoes && (
-                <p className="mt-3 whitespace-pre-line rounded-xl bg-secondary p-3 text-sm">
+                <p className="mt-3 whitespace-pre-line break-words rounded-xl bg-secondary p-3 text-sm">
                   {cto.observacoes}
                 </p>
               )}
@@ -246,7 +246,11 @@ function CtoPage() {
             ultimoRelato.portas_ocupadas_obs !== cto.portas_ocupadas &&
             cto.portas_total != null &&
             ultimoRelato.portas_ocupadas_obs <= cto.portas_total && (
-              <Button variant="outline" onClick={() => aplicarRelato(ultimoRelato)}>
+              <Button
+                variant="outline"
+                className="h-auto min-h-11 whitespace-normal py-2 text-center leading-tight"
+                onClick={() => aplicarRelato(ultimoRelato)}
+              >
                 <CheckCircle2 /> Aplicar contagem do técnico ({ultimoRelato.portas_ocupadas_obs}{" "}
                 ocupadas)
               </Button>
@@ -404,7 +408,7 @@ function RegistrarServico({ cto, tecnico }: { cto: Cto; tecnico: string }) {
           {salvo.acao} · {salvo.tecnico}
         </p>
         <div className="mt-4 grid gap-2 sm:grid-cols-2">
-          <Button asChild variant="success">
+          <Button asChild variant="success" className="h-auto min-h-11 whitespace-normal py-2 text-center leading-tight">
             <a
               href={linkWhatsApp(textoRegistroWhatsApp(salvo, cto))}
               target="_blank"
@@ -451,7 +455,7 @@ function RegistrarServico({ cto, tecnico }: { cto: Cto; tecnico: string }) {
           placeholder="Ex.: Ativado cliente João Silva, fusão refeita, sinal -19 dBm."
         />
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 items-end gap-3">
         <div>
           <label htmlFor="portas" className="mb-1.5 block text-sm font-semibold">
             Portas usadas/alteradas

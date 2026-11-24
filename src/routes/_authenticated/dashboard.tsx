@@ -77,7 +77,7 @@ function DashboardTI() {
       <header className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
           <p className="eyebrow text-primary-soft">Visão geral</p>
-          <h1 className="mt-1 text-2xl font-extrabold sm:text-3xl">
+          <h1 className="mt-1 break-words text-2xl font-extrabold sm:text-3xl">
             {saudacao()}, {me.data?.nome ?? "Administrador"}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">{dataExtenso()}</p>
@@ -128,9 +128,9 @@ function DashboardTI() {
             <ul className="mt-2 flex flex-col gap-2">
               {recentes.map((n) => (
                 <li key={n.id} className="rounded-xl bg-secondary/60 p-3 text-sm">
-                  <p className="flex items-center gap-1.5 truncate font-semibold">
+                  <p className="flex min-w-0 items-center gap-1.5 font-semibold">
                     {n.fixada && <Pin className="size-3.5 shrink-0 text-primary" aria-hidden />}
-                    {n.titulo || n.conteudo.split("\n")[0]}
+                    <span className="truncate">{n.titulo || n.conteudo.split("\n")[0]}</span>
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {n.autor_nome} · {dataHora(n.updated_at)}

@@ -120,7 +120,7 @@ function MapaPage() {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col md:h-[70dvh] md:min-h-[30rem] md:flex-row">
+    <div className="flex min-h-0 flex-1 flex-col md:h-dvh md:min-h-[30rem] md:flex-row">
       <section className="order-2 flex flex-col gap-3 p-4 md:order-1 md:w-[24rem] md:shrink-0 md:overflow-y-auto md:border-r">
         <form onSubmit={pesquisarEndereco} role="search" className="flex flex-col gap-2">
           <label htmlFor="busca" className="text-sm font-semibold">
@@ -165,10 +165,15 @@ function MapaPage() {
             )}
           </div>
           <div className="grid grid-cols-2 gap-2">
-            <Button type="button" onClick={localizar} disabled={localizando}>
+            <Button type="button" onClick={localizar} disabled={localizando} className="h-auto min-h-11 whitespace-normal py-2 text-center leading-tight">
               {localizando ? <Loader2 className="animate-spin" /> : <Crosshair />} Perto de mim
             </Button>
-            <Button type="submit" variant="outline" disabled={buscando || termo.trim().length < 3}>
+            <Button
+              type="submit"
+              variant="outline"
+              disabled={buscando || termo.trim().length < 3}
+              className="h-auto min-h-11 whitespace-normal py-2 text-center leading-tight"
+            >
               {buscando ? <Loader2 className="animate-spin" /> : <MapPin />} Buscar endereço
             </Button>
           </div>
@@ -309,7 +314,7 @@ function CartaoCto({
       </div>
       <CtoVlan cto={cto} className="mt-3" />
       <div className="mt-4 grid grid-cols-2 gap-2">
-        <Button asChild>
+        <Button asChild className="h-auto min-h-11 whitespace-normal py-2 text-center leading-tight">
           <Link to="/ctos/$id" params={{ id: cto.id }}>
             Abrir / registrar
           </Link>

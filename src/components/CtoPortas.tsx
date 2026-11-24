@@ -70,7 +70,7 @@ export function PortasPainel({ cto, ultimoRelato }: { cto: Cto; ultimoRelato?: H
         </div>
       ) : (
         <>
-          <div className="mt-3 flex items-end justify-between">
+          <div className="mt-3 flex flex-wrap items-end justify-between gap-x-3 gap-y-1">
             <p>
               <span
                 className={cn(
